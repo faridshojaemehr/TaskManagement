@@ -1,6 +1,11 @@
 <div class="flex flex-col w-full h-full gap-6 p-4">
   <section id="header" class="flex justify-between items-center w-full">
-    <div class="w-52 font-bold text-main">INEO TASK MANAGEMENT</div>
+    <div class="breadcrumbs font-bold text-main">
+      <ul>
+        <li><a>Projects</a></li>
+        <li><a>INEO TASK MANAGEMENT</a></li>
+      </ul>
+    </div>
     <div>
       <label
         class="input input-bordered rounded-2xl flex items-center gap-2 w-[440px]"
@@ -41,12 +46,64 @@
           <a><mat-icon>share</mat-icon> Share </a>
         </li>
         <li>
-          <a class="active !bg-main"><mat-icon>add</mat-icon> create </a>
+          <a class="active !bg-main"><mat-icon>add</mat-icon> Create </a>
         </li>
       </ul>
     </div>
   </section>
-  <section id="content"></section>
+  <section id="content" class="flex flex-col justify-start w-full">
+    <div class="flex flex-col">
+      <span class="text-[#274E61] text-2xl">Overview</span>
+      <span class="text-[#637381] text-sm"
+        >You can edite All the stuff As you wish</span
+      >
+    </div>
+    <div class="flex w-full justify-center h-[650px] py-5 gap-5">
+      <div
+        class="flex flex-col gap-2 w-[410px] h-full p-5 border-r-2 border-[#E0E2E2] overflow-y-auto scroll"
+      >
+        <div class="flex justify-between text-base text-[#9A9A9A]">
+          To Do
+          <div class="badge text-base text-[#656565]">10</div>
+        </div>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+      </div>
+      <div
+        class="flex flex-col gap-2 w-[410px] h-full p-5 border-r-2 border-[#E0E2E2] overflow-y-auto scroll"
+      >
+        <div class="flex justify-between text-base text-[#9A9A9A]">
+          In Progress
+          <div class="badge">5</div>
+        </div>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+      </div>
+      <div
+        class="flex flex-col gap-2 w-[410px] h-full p-5 border-r-2 border-[#E0E2E2] overflow-y-auto scroll"
+      >
+        <div class="flex justify-between text-base text-[#9A9A9A]">
+          Done
+          <div class="badge text-base text-[#656565]">99</div>
+        </div>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+        <ng-container *ngTemplateOutlet="task"></ng-container>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- <div class="flex justify-center w-full h-full">
@@ -138,3 +195,42 @@
     </div>
   </div>
 </ng-template> -->
+
+<ng-template #task>
+  <section class="flex flex-col gap-2 h-[150px] w-[350px]">
+    <div class="flex flex-col justify-between bg-white rounded-lg p-2 h-full">
+      <div class="flex justify-between items-center">
+        <span class="text-task_title text-base font-semibold">
+          New brand design New brand design
+        </span>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item>
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item>
+            <mat-icon class="!text-red">delete</mat-icon>
+            <span class="text-red">Delete</span>
+          </button>
+        </mat-menu>
+      </div>
+      <div class="text-task_deatils text-sm">
+        illustraition logo colors and brandbook ...
+      </div>
+      <div class="flex justify-between">
+        <button class="btn btn-sm bg-task_process text-[#9A9A9A] !h-[2rem]">
+          Planing T_M1
+        </button>
+        <div class="w-12">
+          <img
+            class="h-8 rounded-3xl"
+            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+</ng-template>
