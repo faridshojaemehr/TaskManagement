@@ -6,6 +6,7 @@ module.exports = {
     colors: {
       main: "#274E61",
       task_board: "#EAEEF0",
+      toolbar: "#768490",
     },
   },
   plugins: [require("daisyui")],

@@ -1,4 +1,55 @@
-<div class="flex justify-center w-full h-full">
+<div class="flex flex-col w-full h-full gap-6 p-4">
+  <section id="header" class="flex justify-between items-center w-full">
+    <div class="w-52 font-bold">INEO TASK MANAGEMENT</div>
+    <div>
+      <label
+        class="input input-bordered rounded-2xl flex items-center gap-2 w-[440px]"
+      >
+        <mat-icon matSuffix>search</mat-icon>
+        <input type="text" class="grow" placeholder="Search..." />
+      </label>
+    </div>
+  </section>
+  <section id="toolbar" class="flex justify-between w-full">
+    <div>
+      <ul
+        class="menu bg-base-200 lg:menu-horizontal rounded-box text-toolbar gap-2"
+      >
+        <li>
+          <a> Members </a>
+        </li>
+        <li>
+          <a class="active !bg-main"> Tasks </a>
+        </li>
+        <li>
+          <a> Meetings </a>
+        </li>
+        <li>
+          <a> Teams </a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <ul class="menu lg:menu-horizontal rounded-box text-toolbar gap-2">
+        <li>
+          <a> <mat-icon>edit</mat-icon> Edit </a>
+        </li>
+        <li>
+          <a> <mat-icon>filter_alt</mat-icon> Filter </a>
+        </li>
+        <li>
+          <a><mat-icon>share</mat-icon> Share </a>
+        </li>
+        <li>
+          <a class="active !bg-main"> create <mat-icon>add</mat-icon></a>
+        </li>
+      </ul>
+    </div>
+  </section>
+  <section id="content"></section>
+</div>
+
+<!-- <div class="flex justify-center w-full h-full">
   <div class="example-container">
     <h2>To do</h2>
 
@@ -86,4 +137,4 @@
       </div>
     </div>
   </div>
-</ng-template>
+</ng-template> -->

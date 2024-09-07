@@ -12,6 +12,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { BehaviorSubject } from 'rxjs';
 import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -23,6 +28,10 @@ import { TaskManagementService } from '../../../../../domain/services/task-manag
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
   ],
   templateUrl: './tasks-borad.component.html',
   styleUrl: './tasks-borad.component.scss',
@@ -34,6 +43,10 @@ export class TasksBoradComponent implements OnInit {
     SUCCESS: 2,
     ERROR: 3,
   };
+  boards: IBoard[] = [
+    { value: 'kanban-0', viewValue: 'Kanban' },
+    { value: 'scrum-1', viewValue: 'Scrum' },
+  ];
   public status$ = new BehaviorSubject<number>(this.STATUS_LOADING.LOADING);
   todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
   inProgress = ['Get to work', 'Pick up groceries'];
