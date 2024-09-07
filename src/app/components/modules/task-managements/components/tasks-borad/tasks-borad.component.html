@@ -1,0 +1,66 @@
+<div class="flex justify-center w-full h-full">
+  <div class="example-container">
+    <h2>To do</h2>
+
+    <div
+      cdkDropList
+      #todoList="cdkDropList"
+      [cdkDropListData]="todo"
+      [cdkDropListConnectedTo]="[inprogressList]"
+      class="example-list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (item of todo; track item) {
+      <div class="example-box" cdkDrag>{{ item }}</div>
+      }
+    </div>
+  </div>
+  <div class="example-container">
+    <h2>In progress</h2>
+    <div
+      cdkDropList
+      #inprogressList="cdkDropList"
+      [cdkDropListData]="inProgress"
+      [cdkDropListConnectedTo]="[todoList]"
+      class="example-list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (item of inProgress; track item) {
+      <div class="example-box" cdkDrag>
+        <div class="flex justify-between items-center w-full">
+          <span>{{ item }}</span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              <button mat-menu-item (click)="onDeleteTask(item)">
+                <mat-icon class="!text-[red]">delete</mat-icon>
+                <span class="!text-[red]">Delete</span>
+              </button>
+            </mat-menu>
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  <div class="example-container">
+    <h2>Done</h2>
+
+    <div
+      cdkDropList
+      #doneList="cdkDropList"
+      [cdkDropListData]="done"
+      [cdkDropListConnectedTo]="[inprogressList]"
+      class="example-list"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (item of done; track item) {
+      <div class="example-box" cdkDrag>{{ item }}</div>
+      }
+    </div>
+  </div>
+</div>
