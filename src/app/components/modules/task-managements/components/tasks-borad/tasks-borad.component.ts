@@ -5,10 +5,13 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { BehaviorSubject } from 'rxjs';
+import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -16,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
   imports: [
     CdkDropList,
     CdkDrag,
+    CommonModule,
     MatButtonModule,
     MatMenuModule,
     MatIconModule,
@@ -23,11 +27,24 @@ import { MatMenuModule } from '@angular/material/menu';
   templateUrl: './tasks-borad.component.html',
   styleUrl: './tasks-borad.component.scss',
 })
-export class TasksBoradComponent {
+export class TasksBoradComponent implements OnInit {
+  private taskManagementService = inject(TaskManagementService);
+  public STATUS_LOADING = {
+    LOADING: 1,
+    SUCCESS: 2,
+    ERROR: 3,
+  };
+  public status$ = new BehaviorSubject<number>(this.STATUS_LOADING.LOADING);
   todo = ['Get to work', 'Pick up groceries', 'Go home', 'Fall asleep'];
   inProgress = ['Get to work', 'Pick up groceries'];
 
   done = ['Get up', 'Brush teeth', 'Take a shower', 'Check e-mail', 'Walk dog'];
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.initService();
+    }, 1000);
+  }
 
   drop(event: CdkDragDrop<string[]>) {
     console.log(event);
@@ -47,7 +64,18 @@ export class TasksBoradComponent {
       );
     }
   }
-
+  private initService() {
+    this.taskManagementService.getTasks().subscribe({
+      next: (value) => {
+        console.log(value);
+        this.status$.next(this.STATUS_LOADING.SUCCESS);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
+  onEditTask() {}
   onDeleteTask(taskItem: any) {
     console.log(taskItem);
   }
