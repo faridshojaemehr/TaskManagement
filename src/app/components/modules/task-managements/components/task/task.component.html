@@ -7,11 +7,7 @@
       >Required fields are marked with an asterisk
     </span>
   </div>
-  <form
-    [formGroup]="taskForm"
-    (ngSubmit)="onSubmit()"
-    class="flex flex-col mt-3"
-  >
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex flex-col">
     <div class="flex justify-between gap-4">
       <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Project</mat-label>

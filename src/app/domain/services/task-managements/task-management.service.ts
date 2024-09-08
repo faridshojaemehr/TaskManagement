@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpService } from '../http-service/http.service';
+import { ITask } from '../../types/task-managements/task.interface';
 
 @Injectable()
 export class TaskManagementService {

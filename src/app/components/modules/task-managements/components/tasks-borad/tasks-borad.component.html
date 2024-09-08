@@ -62,54 +62,80 @@
       <div
         class="flex flex-col gap-2 w-[410px] h-full p-5 border-r-2 border-[#E0E2E2]"
       >
-        <div class="flex justify-between text-base text-main">
+        <div class="flex justify-between text-base text-main font-bold">
           To Do
-          <div class="badge text-base text-[#656565]">10</div>
+          <div class="badge text-base text-[#656565]">
+            {{
+              (todoTasks$ | async)?.length
+                ? (todoTasks$ | async)?.length
+                : " ⌛ "
+            }}
+          </div>
         </div>
+        @if (!isLoading$()) {
         <div class="flex flex-col overflow-y-auto gap-2 scroll">
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
+          @for (task of todoTasks$|async; track $index) {
+          <ng-container
+            [ngTemplateOutlet]="taskTemplate"
+            [ngTemplateOutletContext]="{ task: task }"
+          ></ng-container>
+          }
         </div>
+        }@else {
+        <ng-container [ngTemplateOutlet]="loading"></ng-container>
+        }
       </div>
       <div
         class="flex flex-col gap-2 w-[410px] h-full p-5 border-r-2 border-[#E0E2E2] overflow-y-auto scroll"
       >
-        <div class="flex justify-between text-base text-main">
+        <div class="flex justify-between text-base text-main font-bold">
           In Progress
-          <div class="badge">5</div>
+          <div class="badge">
+            {{
+              (inProgressTasks$ | async)?.length
+                ? (inProgressTasks$ | async)?.length
+                : " ⌛ "
+            }}
+          </div>
         </div>
+        @if (!isLoading$()) {
         <div class="flex flex-col overflow-y-auto gap-2 scroll">
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
+          @for (task of inProgressTasks$|async; track $index) {
+          <ng-container
+            [ngTemplateOutlet]="taskTemplate"
+            [ngTemplateOutletContext]="{ task: task }"
+          ></ng-container>
+          }
         </div>
+        }@else {
+        <ng-container [ngTemplateOutlet]="loading"></ng-container>
+        }
       </div>
       <div
         class="flex flex-col gap-2 w-[410px] h-full p-5 border-r-2 border-[#E0E2E2] overflow-y-auto scroll"
       >
-        <div class="flex justify-between text-base text-main">
+        <div class="flex justify-between text-base text-main font-bold">
           Done
-          <div class="badge text-base text-[#656565]">99</div>
+          <div class="badge">
+            {{
+              (doneTasks$ | async)?.length
+                ? (doneTasks$ | async)?.length
+                : " ⌛ "
+            }}
+          </div>
         </div>
+        @if (!isLoading$()) {
         <div class="flex flex-col overflow-y-auto gap-2 scroll">
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
-          <ng-container *ngTemplateOutlet="task"></ng-container>
+          @for (task of doneTasks$|async; track $index) {
+          <ng-container
+            [ngTemplateOutlet]="taskTemplate"
+            [ngTemplateOutletContext]="{ task: task }"
+          ></ng-container>
+          }
         </div>
+        }@else {
+        <ng-container [ngTemplateOutlet]="loading"></ng-container>
+        }
       </div>
     </div>
   </section>
@@ -205,14 +231,14 @@
   </div>
 </ng-template> -->
 
-<ng-template #task>
+<ng-template #taskTemplate let-task="task">
   <section class="h-[150px] w-[350px]">
     <div
       class="flex flex-col gap-3 justify-between bg-white rounded-lg p-2 h-full"
     >
       <div class="flex justify-between items-center">
         <span class="text-task_title text-base font-semibold">
-          New brand design New brand design
+          {{ task.title }}
         </span>
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
@@ -229,19 +255,69 @@
         </mat-menu>
       </div>
       <div class="text-task_deatils text-sm">
-        illustraition logo colors and brandbook ...
+        {{ task.desc }}
       </div>
-      <div class="flex justify-between">
-        <button class="btn btn-sm bg-task_process text-[#9A9A9A] !h-[2rem]">
-          Planing T_M1
-        </button>
-        <div class="w-12">
-          <img
-            class="h-8 rounded-3xl"
-            src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-          />
+      <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center gap-4">
+          <button
+            class="btn btn-sm bg-task_process text-[#9A9A9A] !h-[2rem] disabled"
+            (click)="copy(task.id)"
+          >
+            Task-{{ task.id }}
+          </button>
+          <span>
+            @switch (task.priority) { @case ('low') {
+            <img
+              [matTooltip]="task.priority"
+              src="./assets/icon/low.svg"
+              [alt]="'Priority' + task.priority"
+            />
+            } @case ('medium') {
+            <img
+              [matTooltip]="task.priority"
+              src="./assets/icon/medium.svg"
+              [alt]="'Priority' + task.priority"
+            />
+
+            } @case ('high') {
+            <img
+              [matTooltip]="task.priority"
+              src="./assets/icon/high.svg"
+              [alt]="'Priority' + task.priority"
+            />
+
+            } }
+          </span>
         </div>
+        <button
+          class="btn btn-sm bg-task_process text-[#9A9A9A] !h-[2rem] disabled"
+        >
+          {{ task.assignedTo }}
+        </button>
       </div>
     </div>
   </section>
+</ng-template>
+
+<ng-template #loading>
+  <div class="flex flex-col gap-4">
+    <div class="flex h-[150px] w-[350px] flex-col gap-4">
+      <div class="skeleton h-32 w-full"></div>
+      <div class="skeleton h-4 w-28"></div>
+      <div class="skeleton h-4 w-full"></div>
+      <div class="skeleton h-4 w-full"></div>
+    </div>
+    <div class="flex h-[150px] w-[350px] flex-col gap-4">
+      <div class="skeleton h-32 w-full"></div>
+      <div class="skeleton h-4 w-28"></div>
+      <div class="skeleton h-4 w-full"></div>
+      <div class="skeleton h-4 w-full"></div>
+    </div>
+    <div class="flex h-[150px] w-[350px] flex-col gap-4">
+      <div class="skeleton h-32 w-full"></div>
+      <div class="skeleton h-4 w-28"></div>
+      <div class="skeleton h-4 w-full"></div>
+      <div class="skeleton h-4 w-full"></div>
+    </div>
+  </div>
 </ng-template>

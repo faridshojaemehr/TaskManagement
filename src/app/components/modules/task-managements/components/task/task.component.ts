@@ -88,7 +88,7 @@ export class TaskComponent implements OnDestroy {
       .pipe(takeUntil(this.notifier$))
       .subscribe({
         next: (value) => {
-          console.log(value);
+          this._dialogRef.close(value);
         },
         error: (err) => {
           console.log(err);
