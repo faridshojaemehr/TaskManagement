@@ -6,9 +6,8 @@ export type verbs = 'PUT' | 'POST' | 'GET' | 'DELETE' | 'PATCH';
 
 @Injectable({ providedIn: 'root' })
 export class HttpService {
-  private _http = inject(HttpClient);
   readonly #baseApi: string = environment.BASE_API;
-
+  constructor(protected _http: HttpClient) {}
   get(url: string, relative: boolean = true) {
     return this.request('GET', url, null, relative);
   }

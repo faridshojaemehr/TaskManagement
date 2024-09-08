@@ -7,7 +7,11 @@
       >Required fields are marked with an asterisk
     </span>
   </div>
-  <form class="flex flex-col mt-3">
+  <form
+    [formGroup]="taskForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col mt-3"
+  >
     <div class="flex justify-between gap-4">
       <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Project</mat-label>
@@ -21,13 +25,22 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Assign</mat-label>
-        <mat-select>
+        <mat-select formControlName="assign">
           @for (user of users; track user) {
           <mat-option [value]="user.value">{{ user.viewValue }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
     </div>
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        formControlName="title"
+        placeholder="implement services ...."
+        value="Sushi"
+      />
+    </mat-form-field>
     <!-- <div class="w-full !overflow-hidden">
       <quill-view-html [content]="desc"></quill-view-html>
     </div>
@@ -38,12 +51,16 @@
 
     <mat-form-field appearance="outline" class="h-[250px]">
       <mat-label>Description</mat-label>
-      <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+      <textarea
+        formControlName="desc"
+        matInput
+        placeholder="Ex. It makes me feel..."
+      ></textarea>
     </mat-form-field>
     <div class="flex justify-between gap-4">
       <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Priority</mat-label>
-        <mat-select>
+        <mat-select formControlName="priority">
           @for (item of priorities; track item) {
           <mat-option [value]="item.value">{{ item.viewValue }}</mat-option>
           }
@@ -51,7 +68,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Status</mat-label>
-        <mat-select>
+        <mat-select formControlName="status">
           @for (item of status; track item) {
           <mat-option [value]="item.value">{{ item.viewValue }}</mat-option>
           }
@@ -61,7 +78,7 @@
     <div class="flex justify-between gap-4">
       <mat-form-field appearance="outline">
         <mat-label>Due Date *</mat-label>
-        <input matInput [matDatepicker]="picker1" />
+        <input matInput [matDatepicker]="picker1" formControlName="dueDate" />
         <mat-datepicker-toggle
           matIconSuffix
           [for]="picker1"
@@ -70,7 +87,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Start Date</mat-label>
-        <input matInput [matDatepicker]="picker2" />
+        <input matInput [matDatepicker]="picker2" formControlName="startDate" />
         <mat-datepicker-toggle
           matIconSuffix
           [for]="picker2"
@@ -79,8 +96,16 @@
       </mat-form-field>
     </div>
     <div class="flex justify-end items-center gap-3">
-      <button class="btn btn-active">Cancel</button>
-      <button class="btn btn-active btn-neutral">Create</button>
+      <button type="button" mat-dialog-close class="btn btn-active">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-active btn-neutral"
+        [disabled]="taskForm.invalid"
+      >
+        Create
+      </button>
     </div>
   </form>
 </div>
