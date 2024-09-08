@@ -17,6 +17,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { TaskComponent } from '../task/task.component';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -32,12 +34,15 @@ import { IBoard } from '../../../../../domain/types/task-managements/board.inter
     MatSelectModule,
     MatInputModule,
     FormsModule,
+    MatDialogModule,
   ],
   templateUrl: './tasks-borad.component.html',
   styleUrl: './tasks-borad.component.scss',
 })
 export class TasksBoradComponent implements OnInit {
-  private taskManagementService = inject(TaskManagementService);
+  private _taskManagementService = inject(TaskManagementService);
+  private _dialog = inject(MatDialog);
+
   public STATUS_LOADING = {
     LOADING: 1,
     SUCCESS: 2,
@@ -78,7 +83,7 @@ export class TasksBoradComponent implements OnInit {
     }
   }
   private initService() {
-    this.taskManagementService.getTasks().subscribe({
+    this._taskManagementService.getTasks().subscribe({
       next: (value) => {
         console.log(value);
         this.status$.next(this.STATUS_LOADING.SUCCESS);
@@ -87,6 +92,9 @@ export class TasksBoradComponent implements OnInit {
         console.log(err);
       },
     });
+  }
+  onCreateTask() {
+    const dialog = this._dialog.open(TaskComponent);
   }
   onEditTask() {}
   onDeleteTask(taskItem: any) {
