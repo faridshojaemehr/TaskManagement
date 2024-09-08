@@ -39,9 +39,13 @@ export class TaskComponent {
     { value: 'alvaro', viewValue: 'Alvaro ' },
   ];
   public priorities: IBoard[] = [
-    { value: 'farid', viewValue: 'Farid SH' },
-    { value: 'saba', viewValue: 'Saba SH' },
-    { value: 'alvaro', viewValue: 'Alvaro ' },
+    { value: 'medium', viewValue: 'Medium' },
+    { value: 'height', viewValue: 'Height ' },
+  ];
+  public status = [
+    { value: 'todo', viewValue: 'To Do' },
+    { value: 'inprogress', viewValue: 'In Progress ' },
+    { value: 'done', viewValue: 'Done ' },
   ];
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 }

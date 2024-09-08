@@ -2,14 +2,14 @@
   class="h-[720px] max-w-[620px] py-10 px-8 flex-col justify-start items-start gap-2 flex"
 >
   <div class="flex flex-col justify-start">
-    <span class="text-2xl font-bold text=[#274E61]">Create issue</span>
+    <span class="text-2xl font-bold text=[#274E61]">Create Task</span>
     <span class="text-sm font-medium text-[#6F7B90]"
       >Required fields are marked with an asterisk
     </span>
   </div>
   <form class="flex flex-col mt-3">
     <div class="flex justify-between gap-4">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Project</mat-label>
         <mat-select>
           @for (project of projects; track project) {
@@ -19,7 +19,7 @@
           }
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Assign</mat-label>
         <mat-select>
           @for (user of users; track user) {
@@ -28,21 +28,20 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div>Description</div>
-    <div class="w-full !overflow-hidden">
+    <!-- <div class="w-full !overflow-hidden">
       <quill-view-html [content]="desc"></quill-view-html>
     </div>
     <quill-view-html
       class="w-full !overflow-hidden"
       [content]="desc"
-    ></quill-view-html>
+    ></quill-view-html> -->
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="h-[250px]">
       <mat-label>Description</mat-label>
       <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
     </mat-form-field>
     <div class="flex justify-between gap-4">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" class="w-[240px]">
         <mat-label>Priority</mat-label>
         <mat-select>
           @for (item of priorities; track item) {
@@ -50,11 +49,11 @@
           }
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Assign</mat-label>
+      <mat-form-field appearance="outline" class="w-[240px]">
+        <mat-label>Status</mat-label>
         <mat-select>
-          @for (user of users; track user) {
-          <mat-option [value]="user.value">{{ user.viewValue }}</mat-option>
+          @for (item of status; track item) {
+          <mat-option [value]="item.value">{{ item.viewValue }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -78,6 +77,10 @@
         ></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
+    </div>
+    <div class="flex justify-end items-center gap-3">
+      <button class="btn btn-active">Cancel</button>
+      <button class="btn btn-active btn-neutral">Create</button>
     </div>
   </form>
 </div>
