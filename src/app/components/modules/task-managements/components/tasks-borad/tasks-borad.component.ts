@@ -203,48 +203,12 @@ export class TasksBoradComponent implements OnInit {
         this.isLoading$.set(true);
 
         setTimeout(() => {
-          this.addTaskToColumn(task);
           this.isLoading$.set(false);
         }, 1000);
       } else {
         console.error('Task status is null or undefined. Task not added.');
       }
     });
-  }
-
-  /**
-   * Adds the provided task to the correct column on the project board
-   * based on its status.
-   *
-   * The method uses a mapping between task statuses and column IDs
-   * to identify the correct column to which the task should be added.
-   * It then locates the column in the `tasksColumns` array and pushes
-   * the task into the column's `tasks` array.
-   *
-   * @param {ITask} task - The task to be added to the board.
-   * @private
-   */
-  private addTaskToColumn(task: ITask) {
-    const columnMap = {
-      [this.TASK_TYPE.TODO]: '1',
-      [this.TASK_TYPE.IN_PROGRESS]: '2',
-      [this.TASK_TYPE.DONE]: '3',
-    };
-
-    const columnId = columnMap[task.status!];
-
-    if (columnId) {
-      const column = this.board.tasksColumns.find(
-        (item) => item.id === columnId
-      );
-      if (column) {
-        column.tasks.unshift(task);
-      } else {
-        console.error('No matching column found for task status:', task.status);
-      }
-    } else {
-      console.error('Invalid task status:', task.status);
-    }
   }
 
   /**
@@ -307,9 +271,6 @@ export class TasksBoradComponent implements OnInit {
     const dialog = this._dialog.open(DeleteTaskComponent, {
       data: task,
     });
-    dialog.afterClosed().subscribe((response) => {
-      this.board = response;
-    });
   }
 
   /**
@@ -337,68 +298,5 @@ export class TasksBoradComponent implements OnInit {
     const dialog = this._dialog.open(TaskComponent, {
       data: task,
     });
-
-    dialog.afterClosed().subscribe((updatedTask) => {
-      if (updatedTask && updatedTask.status) {
-        this.isLoading$.set(true);
-
-        this.updateTaskInColumn(updatedTask).subscribe({
-          next: () => {
-            this.isLoading$.set(false);
-            this._snackBar.open('Task updated successfully.', 'Done');
-
-            console.log('Task updated successfully.');
-          },
-          error: (err) => {
-            this.isLoading$.set(false);
-            this._snackBar.open('Failed to update task.', 'Sorry');
-
-            console.error('Failed to update task:', err);
-          },
-        });
-      } else {
-        console.error('Updated task status is invalid. Task not updated.');
-      }
-    });
-  }
-
-  /**
-   * Updates an existing task in the correct column on the project board.
-   *
-   * This method retrieves the current tasks data from the server and updates
-   * the specified task in the corresponding column based on its status. It handles
-   * any errors if the task or column is not found.
-   *
-   * @param updatedTask - The task object containing updated details to be applied.
-   * @returns An observable that completes once the task update operation is finished.
-   * @private
-   */
-  private updateTaskInColumn(updatedTask: any): Observable<void> {
-    return this._taskManagementService.getTasks().pipe(
-      map((response) => {
-        const column = response.tasksColumns.find(
-          (col) => col.id === updatedTask.status
-        );
-
-        if (!column) {
-          throw new Error(
-            `Column with status '${updatedTask.status}' not found.`
-          );
-        }
-        const taskIndex = column.tasks.findIndex(
-          (task) => task.id === updatedTask.id
-        );
-
-        if (taskIndex === -1) {
-          throw new Error(
-            `Task with ID '${updatedTask.id}' not found in column '${updatedTask.status}'.`
-          );
-        }
-
-        column.tasks[taskIndex] = updatedTask;
-        this.board = response;
-        return;
-      })
-    );
   }
 }

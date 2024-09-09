@@ -1,13 +1,21 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, of } from 'rxjs';
 import { ITask, ITasks } from '../../types/task-managements/task.interface';
-import { HttpService } from '../http-service/http.service';
-import { HttpClient } from '@angular/common/http';
+import { DATA } from '../../../../assets/moke';
 @Injectable()
 export class TaskManagementService {
-  // private _http = inject(HttpService);
   private _http = inject(HttpClient);
+  private _data = DATA;
+  public TASK_TYPE = {
+    TODO: '1',
+    IN_PROGRESS: '2',
+    DONE: '3',
+  };
 
+  updateData(updatedData: ITasks) {
+    this._data = updatedData;
+  }
   /**
    * Fetches tasks from a local JSON file.
    *
@@ -18,8 +26,8 @@ export class TaskManagementService {
    * @returns An observable containing the tasks data with updated status information for each task.
    */
   getTasks(): Observable<ITasks> {
-    const url = './assets/moke.json';
-    return this._http.get<ITasks>(url).pipe();
+    const data = this._data;
+    return of(data);
   }
 
   /**
@@ -33,8 +41,43 @@ export class TaskManagementService {
    * @returns An observable containing the tasks data (as if the new task were created).
    */
   createTask(newTask: ITask): Observable<ITasks> {
-    const url = './assets/moke.json';
-    return this._http.get<ITasks>(url);
+    this.addTaskToColumn(newTask);
+    return this.getTasks();
+  }
+
+  /**
+   * Adds the provided task to the correct column on the project board
+   * based on its status.
+   *
+   * The method uses a mapping between task statuses and column IDs
+   * to identify the correct column to which the task should be added.
+   * It then locates the column in the `tasksColumns` array and pushes
+   * the task into the column's `tasks` array.
+   *
+   * @param {ITask} task - The task to be added to the board.
+   * @private
+   */
+  private addTaskToColumn(task: ITask) {
+    const columnMap = {
+      [this.TASK_TYPE.TODO]: '1',
+      [this.TASK_TYPE.IN_PROGRESS]: '2',
+      [this.TASK_TYPE.DONE]: '3',
+    };
+
+    const columnId = columnMap[task.status!];
+
+    if (columnId) {
+      const column = this._data.tasksColumns.find(
+        (item) => item.id === columnId
+      );
+      if (column) {
+        column.tasks.unshift(task);
+      } else {
+        console.error('No matching column found for task status:', task.status);
+      }
+    } else {
+      console.error('Invalid task status:', task.status);
+    }
   }
 
   /**
@@ -44,12 +87,45 @@ export class TaskManagementService {
    * Currently, it retrieves the tasks data from a local JSON file (`./assets/moke.json`) but does not actually
    * perform an update operation.
    *
-   * @param newTask - The task object containing updated details for the existing task.
+   * @param updateTask - The task object containing updated details for the existing task.
    * @returns An observable containing the tasks data (as if the task were updated).
    */
-  updateTask(newTask: ITask): Observable<ITasks> {
-    const url = './assets/moke.json';
-    return this._http.get<ITasks>(url);
+  updateTask(updateTask: ITask): Observable<ITasks> {
+    this.updateTaskInColumn(updateTask);
+    return this.getTasks();
+  }
+
+  /**
+   * Updates an existing task in the correct column on the project board.
+   *
+   * This method retrieves the current tasks data from the server and updates
+   * the specified task in the corresponding column based on its status. It handles
+   * any errors if the task or column is not found.
+   *
+   * @param updatedTask - The task object containing updated details to be applied.
+   * @returns An observable that completes once the task update operation is finished.
+   * @private
+   */
+  private updateTaskInColumn(updatedTask: any) {
+    const column = this._data.tasksColumns.find(
+      (col) => col.id === updatedTask.status
+    );
+
+    if (!column) {
+      throw new Error(`Column with status '${updatedTask.status}' not found.`);
+    }
+    const taskIndex = column.tasks.findIndex(
+      (task) => task.id === updatedTask.id
+    );
+
+    if (taskIndex === -1) {
+      throw new Error(
+        `Task with ID '${updatedTask.id}' not found in column '${updatedTask.status}'.`
+      );
+    }
+
+    column.tasks[taskIndex] = updatedTask;
+    return;
   }
 
   /**
@@ -64,24 +140,13 @@ export class TaskManagementService {
    * @param status - The status of the column from which the task should be removed.
    * @returns An observable containing the updated tasks data with the specified task removed.
    */
-  deleteTask(id: number, status: string): Observable<any> {
-    const url = './assets/moke.json';
+  deleteTask(id: number, status: string) {
+    const column = this._data.tasksColumns.find((col) => col.id === status);
 
-    return this._http.get<any>(url).pipe(
-      map((response) => {
-        response.tasksColumns.forEach((column) => {
-          column.tasks.forEach((task) => {
-            task.status = column.id;
-          });
-        });
-        const column = response.tasksColumns.find((col) => col.id === status);
-
-        if (!column) {
-          throw new Error(`Column with status '${status}' not found.`);
-        }
-        column.tasks = column.tasks.filter((task) => task.id !== id);
-        return response;
-      })
-    );
+    if (!column) {
+      throw new Error(`Column with status '${status}' not found.`);
+    }
+    column.tasks = column.tasks.filter((task) => task.id !== id);
+    return this.getTasks();
   }
 }
