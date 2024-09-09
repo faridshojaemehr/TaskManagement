@@ -35,8 +35,8 @@ export class DeleteTaskComponent implements OnDestroy {
       .deleteTask(this.data.id, this.data.status)
       .pipe(takeUntil(this._notifier$))
       .subscribe({
-        next: (response) => {
-          this._dialogRef.close(response);
+        next: () => {
+          this._dialogRef.close();
         },
       });
   }
