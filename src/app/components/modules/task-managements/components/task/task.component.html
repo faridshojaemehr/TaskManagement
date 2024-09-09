@@ -109,8 +109,17 @@
     </div>
     <div class="flex justify-end items-center gap-3">
       <button type="button" mat-dialog-close class="btn btn-active">
-        Cancel
+        Cancel</button
+      >@if (isEditMode$()) {
+      <button
+        type="button"
+        class="btn btn-active btn-neutral"
+        [disabled]="taskForm.invalid"
+        (click)="onUpadte()"
+      >
+        Update
       </button>
+      }@else {
       <button
         type="submit"
         class="btn btn-active btn-neutral"
@@ -118,6 +127,7 @@
       >
         Create
       </button>
+      }
     </div>
   </form>
 </div>

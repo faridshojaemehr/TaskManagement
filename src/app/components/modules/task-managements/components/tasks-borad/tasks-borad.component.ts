@@ -5,6 +5,8 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { Clipboard } from '@angular/cdk/clipboard';
+
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { QuillViewHTMLComponent } from 'ngx-quill';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
 import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
 import { TaskComponent } from '../task/task.component';
@@ -26,6 +28,7 @@ import {
   ITask,
   ITasks,
 } from '../../../../../domain/types/task-managements/task.interface';
+import { DeleteTaskComponent } from '../delete-task/delete-task.component';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -53,6 +56,7 @@ export class TasksBoradComponent implements OnInit {
   private _taskManagementService = inject(TaskManagementService);
   private _dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
+  private clipboard = inject(Clipboard);
 
   public STATUS_LOADING = {
     LOADING: 1,
@@ -102,7 +106,6 @@ export class TasksBoradComponent implements OnInit {
         event.currentIndex
       );
     }
-    console.log(this.board);
   }
 
   /**
@@ -122,8 +125,14 @@ export class TasksBoradComponent implements OnInit {
    */
   private initService() {
     this._taskManagementService.getTasks().subscribe({
-      next: (response) => {
+      next: (response: any) => {
         if (response) {
+          // Loop through each task column and each task to add the 'name' property
+          response.tasksColumns.forEach((column) => {
+            column.tasks.forEach((task, index) => {
+              task.status = column.id;
+            });
+          });
           this.board = response;
         }
         this.status$.next(this.STATUS_LOADING.SUCCESS);
@@ -160,9 +169,6 @@ export class TasksBoradComponent implements OnInit {
 
         setTimeout(() => {
           this.addTaskToColumn(task);
-          console.log(task);
-          console.log(this.board.tasksColumns);
-
           this.isLoading$.set(false);
         }, 1000);
       } else {
@@ -205,12 +211,78 @@ export class TasksBoradComponent implements OnInit {
       console.error('Invalid task status:', task.status);
     }
   }
-  onDelete() {}
+  onDelete(task: ITask) {
+    const dialog = this._dialog.open(DeleteTaskComponent, {
+      data: task,
+    });
+    dialog.afterClosed().subscribe((response) => {
+      this.board = response;
+    });
+  }
 
   copy(taskId: number) {
+    this.clipboard.copy(String(taskId));
     this._snackBar.open('Task number Copied !', 'Done');
   }
-  onEditTask() {}
+
+  onEditTask(task: ITask) {
+    const dialog = this._dialog.open(TaskComponent, {
+      data: task,
+    });
+
+    dialog.afterClosed().subscribe((updatedTask) => {
+      if (updatedTask && updatedTask.status) {
+        this.isLoading$.set(true);
+
+        this.updateTaskInColumn(updatedTask).subscribe({
+          next: () => {
+            this.isLoading$.set(false);
+            this._snackBar.open('Task updated successfully.', 'Done');
+
+            console.log('Task updated successfully.');
+          },
+          error: (err) => {
+            this.isLoading$.set(false);
+            this._snackBar.open('Failed to update task.', 'Sorry');
+
+            console.error('Failed to update task:', err);
+          },
+        });
+      } else {
+        console.error('Updated task status is invalid. Task not updated.');
+      }
+    });
+  }
+
+  private updateTaskInColumn(updatedTask: any): Observable<void> {
+    return this._taskManagementService.getTasks().pipe(
+      map((response) => {
+        const column = response.tasksColumns.find(
+          (col) => col.id === updatedTask.status
+        );
+
+        if (!column) {
+          throw new Error(
+            `Column with status '${updatedTask.status}' not found.`
+          );
+        }
+        const taskIndex = column.tasks.findIndex(
+          (task) => task.id === updatedTask.id
+        );
+
+        if (taskIndex === -1) {
+          throw new Error(
+            `Task with ID '${updatedTask.id}' not found in column '${updatedTask.status}'.`
+          );
+        }
+
+        column.tasks[taskIndex] = updatedTask;
+        this.board = response;
+        return;
+      })
+    );
+  }
+
   onDeleteTask(taskItem: any) {
     console.log(taskItem);
   }

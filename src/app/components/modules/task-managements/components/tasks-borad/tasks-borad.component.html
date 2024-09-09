@@ -125,11 +125,11 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>
+          <button mat-menu-item (click)="onEditTask(task)">
             <mat-icon>edit</mat-icon>
             <span>Edit</span>
           </button>
-          <button mat-menu-item>
+          <button mat-menu-item (click)="onDelete(task)">
             <mat-icon class="!text-red">delete</mat-icon>
             <span class="text-red">Delete</span>
           </button>

@@ -1,4 +1,12 @@
-import { Component, Inject, OnDestroy, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -42,20 +50,12 @@ import { ITask } from '../../../../../domain/types/task-managements/task.interfa
   templateUrl: './task.component.html',
   styleUrl: './task.component.scss',
 })
-export class TaskComponent implements OnDestroy {
+export class TaskComponent implements OnInit, OnDestroy {
   private _dialogRef = inject(MatDialogRef<TaskComponent>);
   private _tasksService = inject(TaskManagementService);
   @ViewChild('editor', { static: true }) editor!: QuillEditorComponent;
 
-  public taskForm = new FormGroup({
-    id: new FormControl<number>(_id()),
-    title: new FormControl<string>('', Validators.required),
-    status: new FormControl<string>('', Validators.required),
-    desc: new FormControl<string>('', Validators.required),
-    assignedTo: new FormControl<string>('', Validators.required),
-    priority: new FormControl<string>('', Validators.required),
-    projectname: new FormControl<string>(''),
-  });
+  public taskForm: FormGroup;
 
   public projects: IBoard[] = [
     { value: 'project-0', viewValue: 'project 1' },
@@ -80,7 +80,40 @@ export class TaskComponent implements OnDestroy {
     { value: '3', viewValue: 'Done' },
   ];
   private notifier$ = new Subject();
+  public isEditMode$ = signal<boolean>(false);
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
+
+  ngOnInit(): void {
+    if (this.data) {
+      this.initForm(this.data);
+      this.isEditMode$.set(true);
+    } else {
+      this.initForm(null);
+      this.isEditMode$.set(false);
+    }
+  }
+
+  /**
+   * Initializes the task form with default values and validation rules.
+   * If `formValue` is provided (e.g., when editing an existing task),
+   * it pre-populates the form with the provided data.
+   *
+   * @param formValue - An object containing the existing task data to populate the form, or `null` for a new task.
+   */
+  private initForm(formValue) {
+    this.taskForm = new FormGroup({
+      id: new FormControl(_id() || formValue.id),
+      title: new FormControl('' || formValue?.title, Validators.required),
+      status: new FormControl('' || formValue?.status, Validators.required),
+      desc: new FormControl('' || formValue?.desc, Validators.required),
+      assignedTo: new FormControl(
+        '' || formValue?.assignedTo,
+        Validators.required
+      ),
+      priority: new FormControl('' || formValue?.priority, Validators.required),
+      projectname: new FormControl(''),
+    });
+  }
 
   onSubmit() {
     const formValue = this.taskForm.value;
@@ -105,6 +138,32 @@ export class TaskComponent implements OnDestroy {
         },
       });
   }
+
+  onUpadte() {
+    const formValue = this.taskForm.value;
+    const newTask = {
+      id: this.data?.id,
+      assignedTo: formValue.assignedTo,
+      desc: formValue.desc,
+      priority: formValue.priority,
+      title: formValue.title,
+      status: formValue.status,
+    } as ITask;
+
+    this._tasksService
+      .updateTask(newTask)
+      .pipe(takeUntil(this.notifier$))
+      .subscribe({
+        next: (value) => {
+          this._dialogRef.close(newTask);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+  }
+
+  // Cleanup logic on component destruction
   ngOnDestroy(): void {
     this.notifier$.next(null);
     this.notifier$.complete();
