@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  BASE_API: 'https://taskmanagment.free.beeceptor.com',
+  BASE_API: 'https://project-management.free.beeceptor.com',
 };

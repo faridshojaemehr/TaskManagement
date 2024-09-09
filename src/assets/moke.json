@@ -11,7 +11,8 @@
           "desc": "Review the code submitted by the team and provide feedback.",
           "priority": "high",
           "projectname": "PRJ-2",
-          "assignedTo": "Charlie"
+          "assignedTo": "Charlie",
+          "status": "1"
         },
         {
           "id": 6,
@@ -19,7 +20,8 @@
           "desc": "Resolve the bugs reported in the last sprint.",
           "priority": "high",
           "projectname": "PRJ-4",
-          "assignedTo": "Frank"
+          "assignedTo": "Frank",
+          "status": "1"
         },
         {
           "id": 10,
@@ -27,7 +29,8 @@
           "desc": "Perform unit testing on the new features.",
           "priority": "high",
           "projectname": "PRJ-4",
-          "assignedTo": "Judy"
+          "assignedTo": "Judy",
+          "status": "1"
         },
         {
           "id": 13,
@@ -35,7 +38,8 @@
           "desc": "Get the application ready for deployment to the production environment.",
           "priority": "high",
           "projectname": "PRJ-1",
-          "assignedTo": "Mallory"
+          "assignedTo": "Mallory",
+          "status": "1"
         },
         {
           "id": 16,
@@ -43,7 +47,8 @@
           "desc": "Conduct a security audit on the application.",
           "priority": "medium",
           "projectname": "PRJ-5",
-          "assignedTo": "Peggy"
+          "assignedTo": "Peggy",
+          "status": "1"
         },
         {
           "id": 19,
@@ -51,7 +56,8 @@
           "desc": "Refresh the content on the company website.",
           "priority": "low",
           "projectname": "PRJ-1",
-          "assignedTo": "Sam"
+          "assignedTo": "Sam",
+          "status": "1"
         }
       ]
     },
@@ -65,7 +71,8 @@
           "desc": "Finish the final report for the project and submit it to the manager.",
           "priority": "high",
           "projectname": "PRJ-1",
-          "assignedTo": "Alice"
+          "assignedTo": "Alice",
+          "status": "2"
         },
         {
           "id": 5,
@@ -73,7 +80,8 @@
           "desc": "Update the project documentation with the latest changes.",
           "priority": "low",
           "projectname": "PRJ-2",
-          "assignedTo": "Eve"
+          "assignedTo": "Eve",
+          "status": "2"
         },
         {
           "id": 8,
@@ -81,7 +89,8 @@
           "desc": "Schedule a meeting to discuss the next sprint planning.",
           "priority": "low",
           "projectname": "PRJ-2",
-          "assignedTo": "Heidi"
+          "assignedTo": "Heidi",
+          "status": "2"
         },
         {
           "id": 11,
@@ -89,7 +98,8 @@
           "desc": "Create test cases for the new functionality added.",
           "priority": "medium",
           "projectname": "PRJ-3",
-          "assignedTo": "Karl"
+          "assignedTo": "Karl",
+          "status": "2"
         },
         {
           "id": 14,
@@ -97,7 +107,8 @@
           "desc": "Review and categorize feedback from users.",
           "priority": "medium",
           "projectname": "PRJ-2",
-          "assignedTo": "Nina"
+          "assignedTo": "Nina",
+          "status": "2"
         },
         {
           "id": 18,
@@ -105,7 +116,8 @@
           "desc": "Document the API endpoints for the new features.",
           "priority": "medium",
           "projectname": "PRJ-3",
-          "assignedTo": "Rita"
+          "assignedTo": "Rita",
+          "status": "2"
         }
       ]
     },
@@ -119,7 +131,8 @@
           "desc": "Attend the meeting with the client to discuss project updates.",
           "priority": "medium",
           "projectname": "PRJ-1",
-          "assignedTo": "Bob"
+          "assignedTo": "Bob",
+          "status": "3"
         },
         {
           "id": 4,
@@ -127,7 +140,8 @@
           "desc": "Create a mockup for the new landing page.",
           "priority": "medium",
           "projectname": "PRJ-3",
-          "assignedTo": "Dave"
+          "assignedTo": "Dave",
+          "status": "3"
         },
         {
           "id": 7,
@@ -135,7 +149,8 @@
           "desc": "Create slides for the upcoming client presentation.",
           "priority": "medium",
           "projectname": "PRJ-1",
-          "assignedTo": "Grace"
+          "assignedTo": "Grace",
+          "status": "3"
         },
         {
           "id": 9,
@@ -143,7 +158,8 @@
           "desc": "Start development on the new feature requested by the client.",
           "priority": "high",
           "projectname": "PRJ-5",
-          "assignedTo": "Ivan"
+          "assignedTo": "Ivan",
+          "status": "3"
         },
         {
           "id": 12,
@@ -151,7 +167,8 @@
           "desc": "Optimize the existing code for better performance.",
           "priority": "low",
           "projectname": "PRJ-5",
-          "assignedTo": "Lara"
+          "assignedTo": "Lara",
+          "status": "3"
         },
         {
           "id": 15,
@@ -159,7 +176,8 @@
           "desc": "Migrate the database to the new server.",
           "priority": "high",
           "projectname": "PRJ-3",
-          "assignedTo": "Oscar"
+          "assignedTo": "Oscar",
+          "status": "3"
         },
         {
           "id": 17,
@@ -167,7 +185,8 @@
           "desc": "Prioritize bugs reported by users.",
           "priority": "high",
           "projectname": "PRJ-4",
-          "assignedTo": "Quentin"
+          "assignedTo": "Quentin",
+          "status": "3"
         },
         {
           "id": 20,
@@ -175,7 +194,8 @@
           "desc": "Write the release notes for the upcoming version.",
           "priority": "medium",
           "projectname": "PRJ-2",
-          "assignedTo": "Trudy"
+          "assignedTo": "Trudy",
+          "status": "3"
         }
       ]
     }

@@ -15,45 +15,17 @@ export class TaskManagementService {
    */
   getTasks(): Observable<ITasks> {
     const url = './assets/moke.json';
-
-    return this._http.get<ITasks>(url).pipe(
-      map((response) => {
-        response.tasksColumns.forEach((column) => {
-          column.tasks.forEach((task) => {
-            task.status = column.id;
-          });
-        });
-        return response;
-      })
-    );
+    return this._http.get<ITasks>(url).pipe();
   }
 
   createTask(newTask: ITask): Observable<ITasks> {
     const url = './assets/moke.json';
-    return this._http.get<ITasks>(url).pipe(
-      map((response) => {
-        response.tasksColumns.forEach((column) => {
-          column.tasks.forEach((task) => {
-            task.status = column.id;
-          });
-        });
-        return response;
-      })
-    );
+    return this._http.get<ITasks>(url);
   }
 
   updateTask(newTask: ITask): Observable<ITasks> {
     const url = './assets/moke.json';
-    return this._http.get<ITasks>(url).pipe(
-      map((response) => {
-        response.tasksColumns.forEach((column) => {
-          column.tasks.forEach((task) => {
-            task.status = column.id;
-          });
-        });
-        return response;
-      })
-    );
+    return this._http.get<ITasks>(url);
   }
 
   deleteTask(id: number, status: string): Observable<any> {

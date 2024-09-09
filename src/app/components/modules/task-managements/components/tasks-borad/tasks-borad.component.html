@@ -35,18 +35,49 @@
       </ul>
     </div>
     <div>
-      <ul class="menu lg:menu-horizontal rounded-box text-toolbar gap-2">
-        <li>
-          <a> <mat-icon>edit</mat-icon> Edit </a>
+      <ul class="menu lg:menu-horizontal bg-base-200 rounded-box">
+        @if (currentPriorityFilter) {
+        <li class="mr-2">
+          <a (click)="onFilterChange('')" matTooltip="Clear">
+            <mat-icon>autorenew</mat-icon>
+          </a>
         </li>
-        <li>
-          <a> <mat-icon>filter_alt</mat-icon> Filter </a>
+        }
+        <li class="mr-2">
+          <a
+            (click)="onFilterChange(PRIORITY_TYPE.LOW)"
+            matTooltip="Low"
+            [class.bg-toolbar]="currentPriorityFilter === PRIORITY_TYPE.LOW"
+          >
+            <img src="./assets/icon/low.svg" alt="low" />
+          </a>
         </li>
-        <li>
-          <a><mat-icon>share</mat-icon> Share </a>
+        <li (click)="onFilterChange(PRIORITY_TYPE.MEDIUM)" class="mr-2">
+          <a
+            matTooltip="Medium"
+            [class.bg-toolbar]="currentPriorityFilter === PRIORITY_TYPE.MEDIUM"
+          >
+            <img src="./assets/icon/medium.svg" alt="medium" />
+          </a>
         </li>
-        <li class="cursor-pointer" (click)="onCreateTask()">
-          <a class="active !bg-main"><mat-icon>add</mat-icon> Create </a>
+        <li (click)="onFilterChange(PRIORITY_TYPE.HIGH)" class="mr-2">
+          <a
+            matTooltip="high"
+            [class.bg-toolbar]="currentPriorityFilter === PRIORITY_TYPE.HIGH"
+          >
+            <img src="./assets/icon/high.svg" alt="high" />
+          </a>
+        </li>
+        <li class="mr-2">
+          <a>
+            <mat-icon>share</mat-icon>
+          </a>
+        </li>
+        <li
+          class="cursor-pointer bg-main rounded-lg text-white"
+          (click)="onCreateTask()"
+        >
+          <a> Create</a>
         </li>
       </ul>
     </div>

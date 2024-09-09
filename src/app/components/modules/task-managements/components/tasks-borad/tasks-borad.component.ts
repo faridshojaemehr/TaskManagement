@@ -1,3 +1,4 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import {
   CdkDrag,
   CdkDragDrop,
@@ -5,7 +6,6 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Clipboard } from '@angular/cdk/clipboard';
 
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
@@ -23,12 +23,12 @@ import { QuillViewHTMLComponent } from 'ngx-quill';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
 import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
-import { TaskComponent } from '../task/task.component';
 import {
   ITask,
   ITasks,
 } from '../../../../../domain/types/task-managements/task.interface';
 import { DeleteTaskComponent } from '../delete-task/delete-task.component';
+import { TaskComponent } from '../task/task.component';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -57,6 +57,10 @@ export class TasksBoradComponent implements OnInit {
   private _dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
   private clipboard = inject(Clipboard);
+  public filteredTasks: ITask[] = [];
+  public currentPriorityFilter: string = '';
+  public sortedTasks: any[];
+  private originalTasks: any[];
 
   public STATUS_LOADING = {
     LOADING: 1,
@@ -76,6 +80,11 @@ export class TasksBoradComponent implements OnInit {
   public isLoading$ = signal<boolean>(false);
   public board: ITasks = {} as ITasks;
 
+  public PRIORITY_TYPE = {
+    LOW: 'low',
+    MEDIUM: 'medium',
+    HIGH: 'high',
+  };
   ngOnInit(): void {
     this.isLoading$.set(true);
     setTimeout(() => {
@@ -127,13 +136,15 @@ export class TasksBoradComponent implements OnInit {
     this._taskManagementService.getTasks().subscribe({
       next: (response: any) => {
         if (response) {
-          // Loop through each task column and each task to add the 'name' property
-          response.tasksColumns.forEach((column) => {
-            column.tasks.forEach((task, index) => {
-              task.status = column.id;
-            });
-          });
           this.board = response;
+          this.sortedTasks = this.sortTasksByStatus(response.tasksColumns);
+          this.originalTasks = this.sortedTasks.map((column) => ({
+            ...column,
+            tasks: [...column.tasks],
+          }));
+          this.filteredTasks = this.sortedTasks.flatMap(
+            (column) => column.tasks
+          );
         }
         this.status$.next(this.STATUS_LOADING.SUCCESS);
         this.isLoading$.set(false);
@@ -211,6 +222,31 @@ export class TasksBoradComponent implements OnInit {
       console.error('Invalid task status:', task.status);
     }
   }
+
+  sortTasksByStatus(columns: any[]): any[] {
+    return columns.sort((a, b) => parseInt(a.id, 10) - parseInt(b.id, 10));
+  }
+  applyFilter(priority: string) {
+    if (priority) {
+      // Filter tasks based on priority for each column
+      this.board.tasksColumns = this.originalTasks.map((column) => ({
+        ...column,
+        tasks: column.tasks.filter((task) => task.priority === priority), // Adjust filtering based on priority
+      }));
+    } else {
+      // Restore original data
+      this.board.tasksColumns = this.originalTasks;
+    }
+    this.filteredTasks = this.board.tasksColumns.flatMap(
+      (column) => column.tasks
+    );
+  }
+
+  onFilterChange(newPriority: string) {
+    this.currentPriorityFilter = newPriority;
+    this.applyFilter(newPriority);
+  }
+
   onDelete(task: ITask) {
     const dialog = this._dialog.open(DeleteTaskComponent, {
       data: task,
