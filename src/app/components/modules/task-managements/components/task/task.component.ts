@@ -61,11 +61,7 @@ export class TaskComponent implements OnInit, OnDestroy {
     { value: 'project-0', viewValue: 'project 1' },
     { value: 'project-1', viewValue: 'project 2' },
   ];
-  public users: IUser[] = [
-    { value: 'farid', viewValue: 'Farid' },
-    { value: 'saba', viewValue: 'Saba' },
-    { value: 'alvaro', viewValue: 'Alvaro' },
-  ];
+  public users: IUser[] = [];
   public priorities: IPriority[] = [
     { value: 'low', viewValue: 'Low ' },
     {
@@ -108,6 +104,7 @@ export class TaskComponent implements OnInit, OnDestroy {
    * @param formValue - An object containing the existing task data to populate the form, or `null` for a new task.
    */
   private initForm(formValue) {
+    this.users = this._tasksService.getEmployees();
     this.taskForm = new FormGroup({
       id: new FormControl(_id() || formValue.id),
       title: new FormControl('' || formValue?.title, Validators.required),

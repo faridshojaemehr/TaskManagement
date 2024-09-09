@@ -36,13 +36,6 @@
     </div>
     <div>
       <ul class="menu lg:menu-horizontal bg-base-200 rounded-box">
-        @if (currentPriorityFilter) {
-        <li class="mr-2">
-          <a (click)="onFilterChange('')" matTooltip="Clear">
-            <mat-icon>autorenew</mat-icon>
-          </a>
-        </li>
-        }
         <li class="mr-2">
           <a
             (click)="onFilterChange(PRIORITY_TYPE.LOW)"

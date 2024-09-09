@@ -255,6 +255,9 @@ export class TasksBoradComponent implements OnInit {
    * @param newPriority - The new priority filter value to be applied.
    */
   onFilterChange(newPriority: string) {
+    if (newPriority === this.currentPriorityFilter) {
+      newPriority = '';
+    }
     this.currentPriorityFilter = newPriority;
     this.applyFilter(newPriority);
   }

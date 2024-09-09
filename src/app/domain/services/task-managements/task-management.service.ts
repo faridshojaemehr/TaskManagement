@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
-import { ITask, ITasks } from '../../types/task-managements/task.interface';
+import { Observable, of } from 'rxjs';
 import { DATA } from '../../../../assets/moke';
+import { IUser } from '../../types/task-managements/board.interface';
+import { ITask, ITasks } from '../../types/task-managements/task.interface';
 @Injectable()
 export class TaskManagementService {
   private _http = inject(HttpClient);
@@ -15,6 +16,16 @@ export class TaskManagementService {
 
   updateData(updatedData: ITasks) {
     this._data = updatedData;
+  }
+
+  getEmployees() {
+    const employees: IUser[] = [];
+    this._data.tasksColumns.forEach((item, index) => {
+      item.tasks.map((task) => {
+        employees.push({ value: task.assignedTo, viewValue: task.assignedTo });
+      });
+    });
+    return employees;
   }
   /**
    * Fetches tasks from a local JSON file.
