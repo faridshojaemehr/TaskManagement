@@ -85,6 +85,15 @@ export class TasksBoradComponent implements OnInit {
     MEDIUM: 'medium',
     HIGH: 'high',
   };
+
+  /**
+   * Handles the drag-and-drop reordering of task columns within the board.
+   *
+   * This method updates the order of columns when they are dragged and dropped
+   * within the board using the `CdkDragDrop` event.
+   *
+   * @param event - The drag-and-drop event containing information about the previous and current positions of the dragged item.
+   */
   ngOnInit(): void {
     this.isLoading$.set(true);
     setTimeout(() => {
@@ -92,6 +101,14 @@ export class TasksBoradComponent implements OnInit {
     }, 1000);
   }
 
+  /**
+   * Handles the drag-and-drop reordering of task columns within the board.
+   *
+   * This method updates the order of columns when they are dragged and dropped
+   * within the board using the `CdkDragDrop` event.
+   *
+   * @param event - The drag-and-drop event containing information about the previous and current positions of the dragged item.
+   */
   public dropGrid(event: CdkDragDrop<any>): void {
     moveItemInArray(
       this.board.tasksColumns,
@@ -100,6 +117,14 @@ export class TasksBoradComponent implements OnInit {
     );
   }
 
+  /**
+   * Handles the drag-and-drop operations for tasks between columns.
+   *
+   * This method manages the reordering of tasks within the same column or
+   * transferring tasks between different columns based on the `CdkDragDrop` event.
+   *
+   * @param event - The drag-and-drop event containing information about the previous and current containers and positions of the dragged item.
+   */
   public drop(event: CdkDragDrop<any>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(
@@ -120,17 +145,16 @@ export class TasksBoradComponent implements OnInit {
   /**
    * Initializes the task management service by retrieving tasks from the server.
    *
-   * This method subscribes to the `getTasks` observable, processes the retrieved tasks
-   * based on their status, and updates the corresponding task lists (`todoTasks$`,
-   * `inProgressTasks$`, and `doneTasks$`). It also updates the loading status and handles
-   * any errors that occur during the retrieval process.
+   * This method subscribes to the `getTasks` observable from the `TaskManagementService`,
+   * processes the retrieved tasks, and updates the corresponding task lists (`todoTasks$`,
+   * `inProgressTasks$`, and `doneTasks$`). It manages the component's loading state and
+   * handles any errors that occur during the retrieval process.
    *
    * - TODO tasks are pushed to `todoTasks$`.
    * - In-progress tasks are pushed to `inProgressTasks$`.
    * - Done tasks are pushed to `doneTasks$`.
    *
-   * The method ensures that the component's loading state is properly managed
-   * and that any errors during the API call are logged and handled.
+   * The method also updates the loading status and logs errors if the API call fails.
    */
   private initService() {
     this._taskManagementService.getTasks().subscribe({
@@ -223,9 +247,26 @@ export class TasksBoradComponent implements OnInit {
     }
   }
 
+  /**
+   * Sorts the task columns by their IDs in ascending order.
+   *
+   * This method sorts the columns array based on the numeric value of each column's ID.
+   *
+   * @param columns - The array of task columns to be sorted.
+   * @returns The sorted array of task columns.
+   */
   sortTasksByStatus(columns: any[]): any[] {
     return columns.sort((a, b) => parseInt(a.id, 10) - parseInt(b.id, 10));
   }
+
+  /**
+   * Applies a filter to tasks based on their priority.
+   *
+   * This method updates the `tasksColumns` in the board to only include tasks that match the specified
+   * priority. If no priority is specified, it restores the original task data.
+   *
+   * @param priority - The priority level to filter tasks by (e.g., 'low', 'medium', 'high').
+   */
   applyFilter(priority: string) {
     if (priority) {
       // Filter tasks based on priority for each column
@@ -241,12 +282,27 @@ export class TasksBoradComponent implements OnInit {
       (column) => column.tasks
     );
   }
-
+  /**
+   * Handles changes in the priority filter and updates the displayed tasks.
+   *
+   * This method sets the current priority filter and applies it to the tasks
+   * using `applyFilter`. It updates the task display based on the selected priority.
+   *
+   * @param newPriority - The new priority filter value to be applied.
+   */
   onFilterChange(newPriority: string) {
     this.currentPriorityFilter = newPriority;
     this.applyFilter(newPriority);
   }
 
+  /**
+   * Opens a dialog to confirm the deletion of a task.
+   *
+   * This method displays a confirmation dialog for deleting a specified task.
+   * Once the dialog is closed, it updates the board with the new task list (after deletion).
+   *
+   * @param task - The task to be deleted.
+   */
   onDelete(task: ITask) {
     const dialog = this._dialog.open(DeleteTaskComponent, {
       data: task,
@@ -256,11 +312,27 @@ export class TasksBoradComponent implements OnInit {
     });
   }
 
+  /**
+   * Copies the task ID to the clipboard and displays a notification.
+   *
+   * This method copies the task ID to the clipboard and shows a snackbar
+   * notification indicating that the task number has been copied.
+   *
+   * @param taskId - The ID of the task to be copied.
+   */
   copy(taskId: number) {
     this.clipboard.copy(String(taskId));
     this._snackBar.open('Task number Copied !', 'Done');
   }
 
+  /**
+   * Opens a dialog to edit the details of an existing task.
+   *
+   * This method opens a dialog for editing the specified task. After the dialog is closed,
+   * it updates the task in the board and displays a snackbar notification indicating success or failure.
+   *
+   * @param task - The task to be edited.
+   */
   onEditTask(task: ITask) {
     const dialog = this._dialog.open(TaskComponent, {
       data: task,
@@ -290,6 +362,17 @@ export class TasksBoradComponent implements OnInit {
     });
   }
 
+  /**
+   * Updates an existing task in the correct column on the project board.
+   *
+   * This method retrieves the current tasks data from the server and updates
+   * the specified task in the corresponding column based on its status. It handles
+   * any errors if the task or column is not found.
+   *
+   * @param updatedTask - The task object containing updated details to be applied.
+   * @returns An observable that completes once the task update operation is finished.
+   * @private
+   */
   private updateTaskInColumn(updatedTask: any): Observable<void> {
     return this._taskManagementService.getTasks().pipe(
       map((response) => {
@@ -317,9 +400,5 @@ export class TasksBoradComponent implements OnInit {
         return;
       })
     );
-  }
-
-  onDeleteTask(taskItem: any) {
-    console.log(taskItem);
   }
 }

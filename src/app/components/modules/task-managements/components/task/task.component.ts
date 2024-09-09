@@ -83,6 +83,13 @@ export class TaskComponent implements OnInit, OnDestroy {
   public isEditMode$ = signal<boolean>(false);
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
+  /**
+   * Initializes the component.
+   *
+   * This method sets up the form for either creating a new task or editing an existing task based on the presence of `this.data`.
+   * - If `this.data` is provided, it initializes the form with the existing task data and sets `isEditMode$` to `true`.
+   * - If `this.data` is not provided, it initializes the form with default values for creating a new task and sets `isEditMode$` to `false`.
+   */
   ngOnInit(): void {
     if (this.data) {
       this.initForm(this.data);
@@ -115,6 +122,14 @@ export class TaskComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Submits the form to create a new task.
+   *
+   * This method extracts values from the form, constructs a new task object, and sends it to the server using the `createTask` service method.
+   * If the creation is successful, it closes the dialog and returns the new task data.
+   *
+   * The method handles any errors that occur during the task creation process and logs them to the console.
+   */
   onSubmit() {
     const formValue = this.taskForm.value;
     const newTask = {
@@ -139,6 +154,14 @@ export class TaskComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Submits the form to update an existing task.
+   *
+   * This method extracts values from the form, constructs an updated task object, and sends it to the server using the `updateTask` service method.
+   * If the update is successful, it closes the dialog and returns the updated task data.
+   *
+   * The method handles any errors that occur during the task update process and logs them to the console.
+   */
   onUpadte() {
     const formValue = this.taskForm.value;
     const newTask = {
@@ -163,8 +186,11 @@ export class TaskComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Cleanup logic on component destruction
-  ngOnDestroy(): void {
+  /**
+   * Cleanup logic when the component is destroyed.
+   *
+   * This method completes the notifier subject to prevent memory leaks and ensure that any ongoing subscriptions are properly cleaned up.
+   */ ngOnDestroy(): void {
     this.notifier$.next(null);
     this.notifier$.complete();
   }
