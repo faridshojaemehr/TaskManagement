@@ -29,7 +29,7 @@
         </div>
         <select class="select select-bordered" formControlName="assignedTo">
           @for (user of users; track user) {
-          <option>{{ user.viewValue }}</option>
+          <option [value]="user.value">{{ user.viewValue }}</option>
           }
         </select>
       </label>
@@ -69,7 +69,7 @@
           </div>
           <select class="select select-bordered" formControlName="priority">
             @for (item of priorities; track item) {
-            <option>{{ item.viewValue }}</option>
+            <option [value]="item.value">{{ item.viewValue }}</option>
             }
           </select>
         </label>
@@ -79,7 +79,7 @@
           </div>
           <select class="select select-bordered" formControlName="status">
             @for (item of status; track item) {
-            <option>
+            <option [value]="item.value">
               {{ item.viewValue }}
             </option>
             }
@@ -90,7 +90,7 @@
     <div class="flex justify-between gap-4">
       <mat-form-field appearance="outline">
         <mat-label class="text-[#6F7B90]">Due Date *</mat-label>
-        <input matInput [matDatepicker]="picker1" formControlName="dueDate" />
+        <input matInput [matDatepicker]="picker1" />
         <mat-datepicker-toggle
           matIconSuffix
           [for]="picker1"
@@ -99,7 +99,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label class="text-[#6F7B90]">Start Date</mat-label>
-        <input matInput [matDatepicker]="picker2" formControlName="startDate" />
+        <input matInput [matDatepicker]="picker2" />
         <mat-datepicker-toggle
           matIconSuffix
           [for]="picker2"

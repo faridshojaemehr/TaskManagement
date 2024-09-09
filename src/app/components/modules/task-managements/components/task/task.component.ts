@@ -24,7 +24,7 @@ import {
   IUser,
 } from '../../../../../domain/types/task-managements/board.interface';
 import { _id } from '../../../../../shared/utils/idGenerator';
-import { removeUndefinedValuesFromObject } from '../../../../../shared/utils/removeUndefined';
+import { ITask } from '../../../../../domain/types/task-managements/task.interface';
 
 @Component({
   selector: 'app-task',
@@ -48,14 +48,13 @@ export class TaskComponent implements OnDestroy {
   @ViewChild('editor', { static: true }) editor!: QuillEditorComponent;
 
   public taskForm = new FormGroup({
-    id: new FormControl(),
-    title: new FormControl(null, Validators.required),
-    status: new FormControl(null, Validators.required),
-    desc: new FormControl(null, Validators.required),
-    assignedTo: new FormControl(null, Validators.required),
-    priority: new FormControl(null, Validators.required),
-    dueDate: new FormControl({ value: null, disabled: false }),
-    startDate: new FormControl({ value: null, disabled: false }),
+    id: new FormControl<number>(_id()),
+    title: new FormControl<string>('', Validators.required),
+    status: new FormControl<string>('', Validators.required),
+    desc: new FormControl<string>('', Validators.required),
+    assignedTo: new FormControl<string>('', Validators.required),
+    priority: new FormControl<string>('', Validators.required),
+    projectname: new FormControl<string>(''),
   });
 
   public projects: IBoard[] = [
@@ -76,22 +75,30 @@ export class TaskComponent implements OnDestroy {
     { value: 'high', viewValue: 'High' },
   ];
   public status: IStatus[] = [
-    { value: 'todo', viewValue: 'ToDo' },
-    { value: 'inprogress', viewValue: 'InProgress' },
-    { value: 'done', viewValue: 'Done' },
+    { value: '1', viewValue: 'To Do' },
+    { value: '2', viewValue: 'In Progress' },
+    { value: '3', viewValue: 'Done' },
   ];
   private notifier$ = new Subject();
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
   onSubmit() {
-    this.taskForm.get('id')?.setValue(_id());
-    const formValues = removeUndefinedValuesFromObject(this.taskForm.value);
+    const formValue = this.taskForm.value;
+    const newTask = {
+      id: formValue.id,
+      assignedTo: formValue.assignedTo,
+      desc: formValue.desc,
+      priority: formValue.priority,
+      title: formValue.title,
+      status: formValue.status,
+    } as ITask;
+
     this._tasksService
-      .createTask(formValues)
+      .createTask(newTask)
       .pipe(takeUntil(this.notifier$))
       .subscribe({
         next: (value) => {
-          this._dialogRef.close(value);
+          this._dialogRef.close(newTask);
         },
         error: (err) => {
           console.log(err);

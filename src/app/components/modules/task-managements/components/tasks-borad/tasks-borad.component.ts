@@ -7,22 +7,25 @@ import {
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { BehaviorSubject } from 'rxjs';
-import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { TaskComponent } from '../task/task.component';
-import { ITask } from '../../../../../domain/types/task-managements/task.interface';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { QuillViewHTMLComponent } from 'ngx-quill';
+import { BehaviorSubject } from 'rxjs';
+import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
+import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
+import { TaskComponent } from '../task/task.component';
+import {
+  ITask,
+  ITasks,
+} from '../../../../../domain/types/task-managements/task.interface';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -57,9 +60,9 @@ export class TasksBoradComponent implements OnInit {
     ERROR: 3,
   };
   public TASK_TYPE = {
-    TODO: 'todo' || 'InProgress',
-    IN_PROGRESS: 'inprogress' || 'ToDo',
-    DONE: 'done' || 'Done',
+    TODO: '1',
+    IN_PROGRESS: '2',
+    DONE: '3',
   };
   boards: IBoard[] = [
     { value: 'kanban-0', viewValue: 'Kanban' },
@@ -67,7 +70,7 @@ export class TasksBoradComponent implements OnInit {
   ];
   public status$ = new BehaviorSubject<number>(this.STATUS_LOADING.LOADING);
   public isLoading$ = signal<boolean>(false);
-  public board: any;
+  public board: ITasks = {} as ITasks;
 
   ngOnInit(): void {
     this.isLoading$.set(true);
@@ -133,29 +136,78 @@ export class TasksBoradComponent implements OnInit {
       },
     });
   }
+
+  /**
+   * Opens a dialog to create a new task and assigns it to the appropriate column
+   * on the project board based on its status (To Do, In Progress, Done).
+   *
+   * The dialog is displayed for the user to enter task details. After the dialog
+   * is closed, the task is added to the corresponding column on the board:
+   * - Tasks with status 'TODO' are added to the "To Do" column.
+   * - Tasks with status 'IN_PROGRESS' are added to the "In Progress" column.
+   * - Tasks with status 'DONE' are added to the "Done" column.
+   *
+   * A loading indicator is displayed while the task is being processed.
+   * Once the task is added, the loading state is reset.
+   *
+   * @method onCreateTask
+   */
   onCreateTask() {
     const dialog = this._dialog.open(TaskComponent);
     dialog.afterClosed().subscribe((task) => {
-      console.log(task);
+      if (task && task.status !== null && task.status !== undefined) {
+        this.isLoading$.set(true);
 
-      // if (task?.status?.toLowerCase() === this.TASK_TYPE.TODO) {
-      //   const tasks = this.todoTasks$.value;
-      //   this.todoTasks$.next([task, ...tasks]);
-      // }
-      // if (task?.status?.toLowerCase() === this.TASK_TYPE.IN_PROGRESS) {
-      //   const tasks = this.inProgressTasks$.value;
-      //   this.inProgressTasks$.next([task, ...tasks]);
-      // }
-      // if (task?.status?.toLowerCase() === this.TASK_TYPE.DONE) {
-      //   const tasks = this.doneTasks$.value;
-      //   this.doneTasks$.next([task, ...tasks]);
-      // }
+        setTimeout(() => {
+          this.addTaskToColumn(task);
+          console.log(task);
+          console.log(this.board.tasksColumns);
+
+          this.isLoading$.set(false);
+        }, 1000);
+      } else {
+        console.error('Task status is null or undefined. Task not added.');
+      }
     });
+  }
+
+  /**
+   * Adds the provided task to the correct column on the project board
+   * based on its status.
+   *
+   * The method uses a mapping between task statuses and column IDs
+   * to identify the correct column to which the task should be added.
+   * It then locates the column in the `tasksColumns` array and pushes
+   * the task into the column's `tasks` array.
+   *
+   * @param {ITask} task - The task to be added to the board.
+   * @private
+   */
+  private addTaskToColumn(task: ITask) {
+    const columnMap = {
+      [this.TASK_TYPE.TODO]: '1',
+      [this.TASK_TYPE.IN_PROGRESS]: '2',
+      [this.TASK_TYPE.DONE]: '3',
+    };
+
+    const columnId = columnMap[task.status!];
+
+    if (columnId) {
+      const column = this.board.tasksColumns.find(
+        (item) => item.id === columnId
+      );
+      if (column) {
+        column.tasks.unshift(task);
+      } else {
+        console.error('No matching column found for task status:', task.status);
+      }
+    } else {
+      console.error('Invalid task status:', task.status);
+    }
   }
   onDelete() {}
 
   copy(taskId: number) {
-    console.log(taskId);
     this._snackBar.open('Task number Copied !', 'Done');
   }
   onEditTask() {}
