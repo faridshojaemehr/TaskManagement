@@ -1,0 +1,183 @@
+{
+  "name": "Project Board",
+  "tasksColumns": [
+    {
+      "id": "1",
+      "name": "To Do",
+      "tasks": [
+        {
+          "id": 3,
+          "title": "Code review",
+          "desc": "Review the code submitted by the team and provide feedback.",
+          "priority": "high",
+          "projectname": "PRJ-2",
+          "assignedTo": "Charlie"
+        },
+        {
+          "id": 6,
+          "title": "Fix bugs",
+          "desc": "Resolve the bugs reported in the last sprint.",
+          "priority": "high",
+          "projectname": "PRJ-4",
+          "assignedTo": "Frank"
+        },
+        {
+          "id": 10,
+          "title": "Test application",
+          "desc": "Perform unit testing on the new features.",
+          "priority": "high",
+          "projectname": "PRJ-4",
+          "assignedTo": "Judy"
+        },
+        {
+          "id": 13,
+          "title": "Prepare deployment",
+          "desc": "Get the application ready for deployment to the production environment.",
+          "priority": "high",
+          "projectname": "PRJ-1",
+          "assignedTo": "Mallory"
+        },
+        {
+          "id": 16,
+          "title": "Security audit",
+          "desc": "Conduct a security audit on the application.",
+          "priority": "medium",
+          "projectname": "PRJ-5",
+          "assignedTo": "Peggy"
+        },
+        {
+          "id": 19,
+          "title": "Update website content",
+          "desc": "Refresh the content on the company website.",
+          "priority": "low",
+          "projectname": "PRJ-1",
+          "assignedTo": "Sam"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "In Progress",
+      "tasks": [
+        {
+          "id": 1,
+          "title": "Complete project report",
+          "desc": "Finish the final report for the project and submit it to the manager.",
+          "priority": "high",
+          "projectname": "PRJ-1",
+          "assignedTo": "Alice"
+        },
+        {
+          "id": 5,
+          "title": "Update documentation",
+          "desc": "Update the project documentation with the latest changes.",
+          "priority": "low",
+          "projectname": "PRJ-2",
+          "assignedTo": "Eve"
+        },
+        {
+          "id": 8,
+          "title": "Team meeting",
+          "desc": "Schedule a meeting to discuss the next sprint planning.",
+          "priority": "low",
+          "projectname": "PRJ-2",
+          "assignedTo": "Heidi"
+        },
+        {
+          "id": 11,
+          "title": "Write test cases",
+          "desc": "Create test cases for the new functionality added.",
+          "priority": "medium",
+          "projectname": "PRJ-3",
+          "assignedTo": "Karl"
+        },
+        {
+          "id": 14,
+          "title": "User feedback review",
+          "desc": "Review and categorize feedback from users.",
+          "priority": "medium",
+          "projectname": "PRJ-2",
+          "assignedTo": "Nina"
+        },
+        {
+          "id": 18,
+          "title": "Create API documentation",
+          "desc": "Document the API endpoints for the new features.",
+          "priority": "medium",
+          "projectname": "PRJ-3",
+          "assignedTo": "Rita"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Done",
+      "tasks": [
+        {
+          "id": 2,
+          "title": "Client meeting",
+          "desc": "Attend the meeting with the client to discuss project updates.",
+          "priority": "medium",
+          "projectname": "PRJ-1",
+          "assignedTo": "Bob"
+        },
+        {
+          "id": 4,
+          "title": "Design mockup",
+          "desc": "Create a mockup for the new landing page.",
+          "priority": "medium",
+          "projectname": "PRJ-3",
+          "assignedTo": "Dave"
+        },
+        {
+          "id": 7,
+          "title": "Prepare presentation",
+          "desc": "Create slides for the upcoming client presentation.",
+          "priority": "medium",
+          "projectname": "PRJ-1",
+          "assignedTo": "Grace"
+        },
+        {
+          "id": 9,
+          "title": "Develop feature X",
+          "desc": "Start development on the new feature requested by the client.",
+          "priority": "high",
+          "projectname": "PRJ-5",
+          "assignedTo": "Ivan"
+        },
+        {
+          "id": 12,
+          "title": "Code optimization",
+          "desc": "Optimize the existing code for better performance.",
+          "priority": "low",
+          "projectname": "PRJ-5",
+          "assignedTo": "Lara"
+        },
+        {
+          "id": 15,
+          "title": "Database migration",
+          "desc": "Migrate the database to the new server.",
+          "priority": "high",
+          "projectname": "PRJ-3",
+          "assignedTo": "Oscar"
+        },
+        {
+          "id": 17,
+          "title": "Bug triage",
+          "desc": "Prioritize bugs reported by users.",
+          "priority": "high",
+          "projectname": "PRJ-4",
+          "assignedTo": "Quentin"
+        },
+        {
+          "id": 20,
+          "title": "Prepare release notes",
+          "desc": "Write the release notes for the upcoming version.",
+          "priority": "medium",
+          "projectname": "PRJ-2",
+          "assignedTo": "Trudy"
+        }
+      ]
+    }
+  ]
+}

@@ -1,79 +1,95 @@
 <div
-  class="h-[720px] max-w-[620px] py-10 px-8 flex-col justify-start items-start gap-2 flex"
+  class="h-[750px] m-w-[620px] px-8 py-5 flex-col justify-start items-start gap-5 flex"
 >
   <div class="flex flex-col justify-start">
-    <span class="text-2xl font-bold text=[#274E61]">Create Task</span>
+    <span class="text-2xl font-bold text-main">Create Task</span>
     <span class="text-sm font-medium text-[#6F7B90]"
       >Required fields are marked with an asterisk
     </span>
   </div>
-  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex flex-col">
+  <form
+    [formGroup]="taskForm"
+    (ngSubmit)="onSubmit()"
+    class="flex flex-col gap-4 w-full h-full"
+  >
     <div class="flex justify-between gap-4">
-      <mat-form-field appearance="outline" class="w-[240px]">
-        <mat-label>Project</mat-label>
-        <mat-select>
+      <label class="form-control w-[240px]">
+        <div class="label">
+          <span class="label-text text-[#6F7B90]">Select Projects</span>
+        </div>
+        <select class="select select-bordered">
           @for (project of projects; track project) {
-          <mat-option [value]="project.value">{{
-            project.viewValue
-          }}</mat-option>
+          <option [value]="project.value">{{ project.viewValue }}</option>
           }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-[240px]">
-        <mat-label>Assign</mat-label>
-        <mat-select formControlName="assign">
+        </select>
+      </label>
+      <label class="form-control w-[240px]">
+        <div class="label">
+          <span class="label-text text-[#6F7B90]">Assign To</span>
+        </div>
+        <select class="select select-bordered" formControlName="assignedTo">
           @for (user of users; track user) {
-          <mat-option [value]="user.value">{{ user.viewValue }}</mat-option>
+          <option>{{ user.viewValue }}</option>
           }
-        </mat-select>
-      </mat-form-field>
+        </select>
+      </label>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input
-        matInput
-        formControlName="title"
-        placeholder="implement services ...."
-        value="Sushi"
-      />
-    </mat-form-field>
-    <!-- <div class="w-full !overflow-hidden">
-      <quill-view-html [content]="desc"></quill-view-html>
+    <div class="!w-full">
+      <label class="form-control">
+        <div class="label">
+          <span class="label-text text-[#6F7B90]">Subject</span>
+        </div>
+        <input
+          type="text"
+          placeholder="implement services ...."
+          class="input input-bordered !w-full"
+          formControlName="title"
+        />
+      </label>
     </div>
-    <quill-view-html
-      class="w-full !overflow-hidden"
-      [content]="desc"
-    ></quill-view-html> -->
+    <div class="grow">
+      <label class="form-control">
+        <div class="label">
+          <span class="label-text text-[#6F7B90]">Description</span>
+        </div>
+        <quill-editor
+          formControlName="desc"
+          [style]="{ height: '100px' }"
+          #editor
+          theme="snow"
+        ></quill-editor>
+      </label>
+    </div>
 
-    <mat-form-field appearance="outline" class="h-[250px]">
-      <mat-label>Description</mat-label>
-      <textarea
-        formControlName="desc"
-        matInput
-        placeholder="Ex. It makes me feel..."
-      ></textarea>
-    </mat-form-field>
     <div class="flex justify-between gap-4">
-      <mat-form-field appearance="outline" class="w-[240px]">
-        <mat-label>Priority</mat-label>
-        <mat-select formControlName="priority">
-          @for (item of priorities; track item) {
-          <mat-option [value]="item.value">{{ item.viewValue }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-[240px]">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          @for (item of status; track item) {
-          <mat-option [value]="item.value">{{ item.viewValue }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <div class="flex justify-between gap-4">
+        <label class="form-control w-[240px]">
+          <div class="label">
+            <span class="label-text text-[#6F7B90]">Priority</span>
+          </div>
+          <select class="select select-bordered" formControlName="priority">
+            @for (item of priorities; track item) {
+            <option>{{ item.viewValue }}</option>
+            }
+          </select>
+        </label>
+        <label class="form-control w-[240px]">
+          <div class="label">
+            <span class="label-text text-[#6F7B90]">Status</span>
+          </div>
+          <select class="select select-bordered" formControlName="status">
+            @for (item of status; track item) {
+            <option>
+              {{ item.viewValue }}
+            </option>
+            }
+          </select>
+        </label>
+      </div>
     </div>
     <div class="flex justify-between gap-4">
       <mat-form-field appearance="outline">
-        <mat-label>Due Date *</mat-label>
+        <mat-label class="text-[#6F7B90]">Due Date *</mat-label>
         <input matInput [matDatepicker]="picker1" formControlName="dueDate" />
         <mat-datepicker-toggle
           matIconSuffix
@@ -82,7 +98,7 @@
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
       <mat-form-field appearance="outline">
-        <mat-label>Start Date</mat-label>
+        <mat-label class="text-[#6F7B90]">Start Date</mat-label>
         <input matInput [matDatepicker]="picker2" formControlName="startDate" />
         <mat-datepicker-toggle
           matIconSuffix

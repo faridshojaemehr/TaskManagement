@@ -22,6 +22,7 @@ import { TaskComponent } from '../task/task.component';
 import { ITask } from '../../../../../domain/types/task-managements/task.interface';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { QuillViewHTMLComponent } from 'ngx-quill';
 
 @Component({
   selector: 'app-tasks-borad',
@@ -40,6 +41,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     MatSnackBarModule,
     MatTooltipModule,
+    QuillViewHTMLComponent,
   ],
   templateUrl: './tasks-borad.component.html',
   styleUrl: './tasks-borad.component.scss',
@@ -48,18 +50,16 @@ export class TasksBoradComponent implements OnInit {
   private _taskManagementService = inject(TaskManagementService);
   private _dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
-  public todoTasks$ = new BehaviorSubject<ITask[]>([]);
-  public inProgressTasks$ = new BehaviorSubject<ITask[]>([]);
-  public doneTasks$ = new BehaviorSubject<ITask[]>([]);
+
   public STATUS_LOADING = {
     LOADING: 1,
     SUCCESS: 2,
     ERROR: 3,
   };
   public TASK_TYPE = {
-    TODO: 'todo',
-    IN_PROGRESS: 'inprogress',
-    DONE: 'done',
+    TODO: 'todo' || 'InProgress',
+    IN_PROGRESS: 'inprogress' || 'ToDo',
+    DONE: 'done' || 'Done',
   };
   boards: IBoard[] = [
     { value: 'kanban-0', viewValue: 'Kanban' },
@@ -67,6 +67,7 @@ export class TasksBoradComponent implements OnInit {
   ];
   public status$ = new BehaviorSubject<number>(this.STATUS_LOADING.LOADING);
   public isLoading$ = signal<boolean>(false);
+  public board: any;
 
   ngOnInit(): void {
     this.isLoading$.set(true);
@@ -75,7 +76,15 @@ export class TasksBoradComponent implements OnInit {
     }, 1000);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  public dropGrid(event: CdkDragDrop<any>): void {
+    moveItemInArray(
+      this.board.tasksColumns,
+      event.previousIndex,
+      event.currentIndex
+    );
+  }
+
+  public drop(event: CdkDragDrop<any>): void {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,
@@ -90,6 +99,7 @@ export class TasksBoradComponent implements OnInit {
         event.currentIndex
       );
     }
+    console.log(this.board);
   }
 
   /**
@@ -109,31 +119,9 @@ export class TasksBoradComponent implements OnInit {
    */
   private initService() {
     this._taskManagementService.getTasks().subscribe({
-      next: (response: ITask[] | null) => {
+      next: (response) => {
         if (response) {
-          const todoTasks: ITask[] = [];
-          const inProgressTasks: ITask[] = [];
-          const doneTasks: ITask[] = [];
-
-          response.forEach((item) => {
-            switch (item.status) {
-              case this.TASK_TYPE.TODO:
-                todoTasks.push(item);
-                break;
-              case this.TASK_TYPE.IN_PROGRESS:
-                inProgressTasks.push(item);
-                break;
-              case this.TASK_TYPE.DONE:
-                doneTasks.push(item);
-                break;
-              default:
-                break;
-            }
-          });
-
-          this.todoTasks$.next(todoTasks);
-          this.inProgressTasks$.next(inProgressTasks);
-          this.doneTasks$.next(doneTasks);
+          this.board = response;
         }
         this.status$.next(this.STATUS_LOADING.SUCCESS);
         this.isLoading$.set(false);
@@ -147,10 +135,24 @@ export class TasksBoradComponent implements OnInit {
   }
   onCreateTask() {
     const dialog = this._dialog.open(TaskComponent);
-    dialog.afterClosed().subscribe((value) => {
-      console.log(value);
+    dialog.afterClosed().subscribe((task) => {
+      console.log(task);
+
+      // if (task?.status?.toLowerCase() === this.TASK_TYPE.TODO) {
+      //   const tasks = this.todoTasks$.value;
+      //   this.todoTasks$.next([task, ...tasks]);
+      // }
+      // if (task?.status?.toLowerCase() === this.TASK_TYPE.IN_PROGRESS) {
+      //   const tasks = this.inProgressTasks$.value;
+      //   this.inProgressTasks$.next([task, ...tasks]);
+      // }
+      // if (task?.status?.toLowerCase() === this.TASK_TYPE.DONE) {
+      //   const tasks = this.doneTasks$.value;
+      //   this.doneTasks$.next([task, ...tasks]);
+      // }
     });
   }
+  onDelete() {}
 
   copy(taskId: number) {
     console.log(taskId);

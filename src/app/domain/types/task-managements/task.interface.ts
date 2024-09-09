@@ -3,4 +3,5 @@ export interface ITask {
   title: string;
   desc: string;
   status: string;
+  assignedTo: string;
 }

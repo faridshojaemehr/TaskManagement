@@ -1,4 +1,10 @@
 import { Component, Inject, OnDestroy, ViewChild, inject } from '@angular/core';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
@@ -8,23 +14,17 @@ import {
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { QuillEditorComponent, QuillViewHTMLComponent } from 'ngx-quill';
+import { QuillEditorComponent } from 'ngx-quill';
+import { Subject, takeUntil } from 'rxjs';
+import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
 import {
   IBoard,
   IPriority,
   IStatus,
   IUser,
 } from '../../../../../domain/types/task-managements/board.interface';
-import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-import { removeUndefinedValuesFromObject } from '../../../../../shared/utils/removeUndefined';
 import { _id } from '../../../../../shared/utils/idGenerator';
+import { removeUndefinedValuesFromObject } from '../../../../../shared/utils/removeUndefined';
 
 @Component({
   selector: 'app-task',
@@ -34,7 +34,7 @@ import { _id } from '../../../../../shared/utils/idGenerator';
     MatSelectModule,
     MatInputModule,
     MatDatepickerModule,
-    QuillViewHTMLComponent,
+    QuillEditorComponent,
     ReactiveFormsModule,
     MatDialogModule,
   ],
@@ -48,14 +48,14 @@ export class TaskComponent implements OnDestroy {
   @ViewChild('editor', { static: true }) editor!: QuillEditorComponent;
 
   public taskForm = new FormGroup({
-    id: new FormControl<number | unknown>(null),
+    id: new FormControl(),
     title: new FormControl(null, Validators.required),
     status: new FormControl(null, Validators.required),
     desc: new FormControl(null, Validators.required),
-    assign: new FormControl({ value: null, disabled: true }),
+    assignedTo: new FormControl(null, Validators.required),
     priority: new FormControl(null, Validators.required),
-    dueDate: new FormControl({ value: null, disabled: true }),
-    startDate: new FormControl({ value: null, disabled: true }),
+    dueDate: new FormControl({ value: null, disabled: false }),
+    startDate: new FormControl({ value: null, disabled: false }),
   });
 
   public projects: IBoard[] = [
@@ -63,26 +63,29 @@ export class TaskComponent implements OnDestroy {
     { value: 'project-1', viewValue: 'project 2' },
   ];
   public users: IUser[] = [
-    { value: 'farid', viewValue: 'Farid SH ' },
-    { value: 'saba', viewValue: 'Saba SH ' },
-    { value: 'alvaro', viewValue: 'Alvaro ' },
+    { value: 'farid', viewValue: 'Farid' },
+    { value: 'saba', viewValue: 'Saba' },
+    { value: 'alvaro', viewValue: 'Alvaro' },
   ];
   public priorities: IPriority[] = [
-    { value: 'low', viewValue: 'Low 🕛' },
-    { value: 'medium', viewValue: 'Medium 🫱🏼‍🫲🏽' },
-    { value: 'height', viewValue: 'High 🚄' },
+    { value: 'low', viewValue: 'Low ' },
+    {
+      value: 'medium',
+      viewValue: 'Medium  ',
+    },
+    { value: 'high', viewValue: 'High' },
   ];
   public status: IStatus[] = [
-    { value: 'todo', viewValue: 'To Do 📅' },
-    { value: 'inprogress', viewValue: 'In Progress ⏳' },
-    { value: 'done', viewValue: 'Done ✅' },
+    { value: 'todo', viewValue: 'ToDo' },
+    { value: 'inprogress', viewValue: 'InProgress' },
+    { value: 'done', viewValue: 'Done' },
   ];
   private notifier$ = new Subject();
   constructor(@Inject(MAT_DIALOG_DATA) public data: any) {}
 
   onSubmit() {
+    this.taskForm.get('id')?.setValue(_id());
     const formValues = removeUndefinedValuesFromObject(this.taskForm.value);
-    formValues['id'] = _id();
     this._tasksService
       .createTask(formValues)
       .pipe(takeUntil(this.notifier$))
