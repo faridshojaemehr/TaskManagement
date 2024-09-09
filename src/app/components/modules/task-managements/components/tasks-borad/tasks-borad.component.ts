@@ -8,7 +8,7 @@ import {
 } from '@angular/cdk/drag-drop';
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -20,7 +20,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { QuillViewHTMLComponent } from 'ngx-quill';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, map, takeUntil } from 'rxjs';
 import { TaskManagementService } from '../../../../../domain/services/task-managements/task-management.service';
 import { IBoard } from '../../../../../domain/types/task-managements/board.interface';
 import {
@@ -52,7 +52,7 @@ import { TaskComponent } from '../task/task.component';
   templateUrl: './tasks-borad.component.html',
   styleUrl: './tasks-borad.component.scss',
 })
-export class TasksBoradComponent implements OnInit {
+export class TasksBoradComponent implements OnInit, OnDestroy {
   private _taskManagementService = inject(TaskManagementService);
   private _dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
@@ -85,6 +85,7 @@ export class TasksBoradComponent implements OnInit {
     MEDIUM: 'medium',
     HIGH: 'high',
   };
+  private notifier$ = new Subject();
 
   /**
    * Handles the drag-and-drop reordering of task columns within the board.
@@ -139,6 +140,16 @@ export class TasksBoradComponent implements OnInit {
         event.previousIndex,
         event.currentIndex
       );
+
+      const findTask = event.container.data.filter(
+        (task) => task.status == event.previousContainer.id
+      );
+      findTask.map((element) => {
+        element.status = event.container.id;
+        this._taskManagementService
+          .updateTask(element)
+          .pipe(takeUntil(this.notifier$));
+      });
     }
   }
 
@@ -301,5 +312,10 @@ export class TasksBoradComponent implements OnInit {
     const dialog = this._dialog.open(TaskComponent, {
       data: task,
     });
+  }
+
+  ngOnDestroy(): void {
+    this.notifier$.next(null);
+    this.notifier$.complete();
   }
 }
